@@ -1,11 +1,15 @@
+  
 import React, { Component } from 'react';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import './Dash.css';
+import {Link, withRouter} from 'react-router-dom'
+import Nav from '../Nav/Nav'
+
 
 class Dash extends Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
 
     this.state = {
       search: '',
@@ -64,8 +68,12 @@ class Dash extends Component {
     let {loading, search, posts, myPosts, oldestFirst} = this.state
 
     let mappedPosts = posts.map(post => {
-      return <div className='content-box dash-post-box' key={post.post_id}>
-          <h3>{post.title}</h3>
+      console.log(post.post_id)
+      return (
+      <div className='content-box dash-post-box' key={post.post_id}>
+          <Link to={`/api/post/${post.post_id}`} post_id={post.post_id}>
+            <h3>{post.title}</h3>
+          </Link>
           {
             post.author_username === this.props.username 
             ?
@@ -76,11 +84,14 @@ class Dash extends Component {
               <img src={post.profile_pic} alt='author' />
             </div>
           }
-        </div>
+    </div>
+      )
     })
     
     return (
       <div className='dash'>
+        <Nav />
+        
         <div className='content-box dash-filter'>
           <div className='dash-search-box'>
             <input value={search} onChange={e => this.setState({ search: e.target.value })} className='dash-search-bar' placeholder='Search by Title' />
@@ -113,7 +124,8 @@ class Dash extends Component {
 }
 
 function mapStateToProps(state) {
+  console.log(state)
   return state;
 }
 
-export default connect(mapStateToProps)(Dash);
+export default withRouter(connect(mapStateToProps)(Dash));

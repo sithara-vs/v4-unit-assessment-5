@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import logo from './../../assets/helo_logo.png';
 import './Auth.css';
+import {connect} from 'react-redux'
+import {updateUser} from '../../ducks/reducer'
 
 class Auth extends Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.state = {
       username: '',
       password: '',
@@ -25,6 +27,11 @@ class Auth extends Component {
     axios.post('/api/auth/login', this.state)
       .then(res => {
         //code here
+        this.props.history.push('/dash')
+        this.props.updateUser({
+          username: res.data.username,
+          profile_pic: res.data.profile_pic
+        })
       })
       .catch(err => {
         console.log(err)
@@ -36,6 +43,12 @@ class Auth extends Component {
     axios.post('/api/auth/register', this.state)
       .then(res => {
         //code here
+          this.props.updateUser({
+          username: res.data.username,
+          profile_pic: res.data.profile_pic
+        })
+        this.props.history.push('/dash')
+      
       })
       .catch(err => {
         console.log(err)
@@ -67,8 +80,8 @@ class Auth extends Component {
             <input value={this.state.password} type='password' onChange={e => this.handleChange('password', e.target.value)} />
           </div>
           <div className='auth-button-container'>
-            <button className='dark-button' onClick={this.login}> Login </button>
-            <button className='dark-button' onClick={this.register}> Register </button>
+            <button className='dark-button' id='login-btn' onClick={this.login}> Login </button>
+            <button className='dark-button' id='reg-btn' onClick={this.register}> Register </button>
           </div>
         </div>
       </div>
@@ -76,4 +89,4 @@ class Auth extends Component {
   }
 }
 
-export default Auth;
+export default connect(null, {updateUser}) (Auth);

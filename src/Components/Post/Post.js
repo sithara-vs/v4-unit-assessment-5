@@ -2,10 +2,13 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import noImage from './../../assets/no_image.jpg';
 import './Post.css';
+import routes from '../../routes'
+import Nav from '../Nav/Nav'
+
 
 class Post extends Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super()
 
     this.state = {
       author: '',
@@ -13,14 +16,17 @@ class Post extends Component {
       title: '',
       img: '',
       content: '',
-      loading: true
+      loading: true,
     }
   }
 
   componentDidMount() {
-    axios.get(`/api/post/1`)
+    console.log(this.props.location.pathname)
+    axios.get(`${this.props.match.params}`)
       .then(res => {
+        console.log(this.props.location.pathname)
         this.setState({ ...res.data, loading: false })
+        console.log('mounted post')
       })
   }
 
@@ -28,10 +34,14 @@ class Post extends Component {
     let imgSrc = this.state.img ? this.state.img : noImage;
 
     return (
+      
       <div className='post content-box'>
+        
+        {routes}
         {!this.state.loading && this.state.title
           ?
           <div>
+            <Nav />
             <div className='post-header'>
               <h2 className='title'>{this.state.title}</h2>
               <div className='author-box'>
