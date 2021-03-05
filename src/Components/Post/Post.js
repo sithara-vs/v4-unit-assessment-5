@@ -7,8 +7,8 @@ import Nav from '../Nav/Nav'
 
 
 class Post extends Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props);
 
     this.state = {
       author: '',
@@ -21,12 +21,12 @@ class Post extends Component {
   }
 
   componentDidMount() {
-    console.log(this.props.location.pathname)
-    axios.get(`${this.props.match.params}`)
+    // console.log(this.props.location.pathname)
+    axios.get(`${this.props.match.params.id}`)
       .then(res => {
-        console.log(this.props.location.pathname)
+        // console.log(this.props.location.pathname)
         this.setState({ ...res.data, loading: false })
-        console.log('mounted post')
+        // console.log('mounted post')
       })
   }
 

@@ -35,9 +35,7 @@ class Nav extends Component {
       })
   }
 
-  // getUser() {
-  //   this.getUser()
-  // }
+ 
   
   logout() {
     axios.post('/api/auth/logout')
