@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import noImage from './../../assets/no_image.jpg';
 import './Form.css';
-import Nav from '../Nav/Nav'
+import { connect } from 'react-redux';
 
 class Form extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       title: '',
       img: '',
@@ -15,28 +15,25 @@ class Form extends Component {
     this.submit = this.submit.bind(this);
   }
 
+
   submit() {
     axios.post('/api/post', this.state)
-      .then(() => {
-        console.log('post successful')
-        this.props.history.push('/dash')
-      })
+      .then(() => this.props.history.push('/dash'))
       .catch((err) => console.log(err))
   }
-  
+
   render() {
     let imgSrc = this.state.img ? this.state.img : noImage;
 
     return (
       <div className='form content-box'>
-        <Nav />
         <h2 className='title'>New Post</h2>
         <div className='form-main'>
           <div className='form-input-box'>
             <p>Title:</p>
             <input value={this.state.title} onChange={e => this.setState({ title: e.target.value })} />
           </div>
-          <img className='form-img-prev' src={imgSrc} alt='preview'/>
+          <img className='form-img-prev' src={imgSrc} alt='preview' />
           <div className='form-input-box'>
             <p>Image URL:</p>
             <input value={this.state.img} onChange={e => this.setState({ img: e.target.value })} />
@@ -51,5 +48,9 @@ class Form extends Component {
     );
   }
 }
-
-export default Form;
+function mapStateToProps(state) {
+  return {
+    id: state.id
+  }
+}
+export default connect(mapStateToProps)(Form);

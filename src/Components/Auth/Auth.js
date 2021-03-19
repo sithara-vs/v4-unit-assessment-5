@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import { connect } from 'react-redux'
+import { updateUser } from '../../dux/reducer'
 import logo from './../../assets/helo_logo.png';
 import './Auth.css';
-import {connect} from 'react-redux'
-import {updateUser} from '../../ducks/reducer'
 
 class Auth extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       username: '',
       password: '',
@@ -26,40 +26,31 @@ class Auth extends Component {
   login() {
     axios.post('/api/auth/login', this.state)
       .then(res => {
-        //code here
+        this.props.updateUser(res.data)
         this.props.history.push('/dash')
-        this.props.updateUser({
-          username: res.data.username,
-          profile_pic: res.data.profile_pic
-        })
       })
       .catch(err => {
         console.log(err)
-        this.setState({errorMsg: 'Incorrect username or password!'})
+        this.setState({ errorMsg: 'Incorrect username or password!' })
       })
   }
-
+  /*this now allows you to make a post when you first register! woo */
   register() {
     axios.post('/api/auth/register', this.state)
       .then(res => {
-        //code here
-          this.props.updateUser({
-          username: res.data.username,
-          profile_pic: res.data.profile_pic
-        })
+        this.props.updateUser(res.data)
         this.props.history.push('/dash')
-      
       })
       .catch(err => {
         console.log(err)
-        this.setState({errorMsg: 'Username taken!'})
+        this.setState({ errorMsg: 'Username taken!' })
       })
   }
 
   closeErrorMessage = () => {
     this.setState({
-      errorMsg: false, 
-      username: '', 
+      errorMsg: false,
+      username: '',
       password: ''
     })
   }
@@ -80,8 +71,8 @@ class Auth extends Component {
             <input value={this.state.password} type='password' onChange={e => this.handleChange('password', e.target.value)} />
           </div>
           <div className='auth-button-container'>
-            <button className='dark-button' id='login-btn' onClick={this.login}> Login </button>
-            <button className='dark-button' id='reg-btn' onClick={this.register}> Register </button>
+            <button className='dark-button' onClick={this.login}> Login </button>
+            <button className='dark-button' onClick={this.register}> Register </button>
           </div>
         </div>
       </div>
@@ -89,4 +80,6 @@ class Auth extends Component {
   }
 }
 
-export default connect(null, {updateUser}) (Auth);
+
+
+export default connect(null, { updateUser })(Auth);

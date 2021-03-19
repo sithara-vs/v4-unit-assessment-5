@@ -1,15 +1,12 @@
-  
 import React, { Component } from 'react';
 import axios from 'axios';
-import { connect } from 'react-redux';
+import { Link } from 'react-router-dom'
+import { connect } from 'react-redux'
 import './Dash.css';
-import {Link, withRouter} from 'react-router-dom'
-import Nav from '../Nav/Nav'
-
 
 class Dash extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       search: '',
@@ -45,6 +42,7 @@ class Dash extends Component {
       .then(res => {
         this.setState({ posts: res.data, loading: false })
       })
+
   }
 
   deletePost = id => {
@@ -65,17 +63,14 @@ class Dash extends Component {
   }
 
   render() {
-    let {loading, search, posts, myPosts, oldestFirst} = this.state
+
+    let { loading, search, posts, myPosts, oldestFirst } = this.state
 
     let mappedPosts = posts.map(post => {
-      console.log(post.post_id)
-      return (
-      <div className='content-box dash-post-box' key={post.post_id}>
-          <Link to={`/api/post/${post.post_id}`} post_id={post.post_id}>
-            <h3>{post.title}</h3>
-          </Link>
-          {
-            post.author_username === this.props.username 
+      return <div className='content-box dash-post-box' key={post.post_id}>
+        <Link to={`/post/${post.post_id}`}><h3>{post.title}</h3></Link>
+        {
+          post.author_username === this.props.username
             ?
             <button onClick={_ => this.deletePost(post.post_id)}>delete your post</button>
             :
@@ -83,15 +78,12 @@ class Dash extends Component {
               <p>by {post.author_username}</p>
               <img src={post.profile_pic} alt='author' />
             </div>
-          }
-    </div>
-      )
+        }
+      </div >
     })
-    
+
     return (
-      <div className='dash'>
-        <Nav />
-        
+      <div className='dash' >
         <div className='content-box dash-filter'>
           <div className='dash-search-box'>
             <input value={search} onChange={e => this.setState({ search: e.target.value })} className='dash-search-bar' placeholder='Search by Title' />
@@ -122,10 +114,10 @@ class Dash extends Component {
     );
   }
 }
-
 function mapStateToProps(state) {
-  console.log(state)
-  return state;
+  return {
+    username: state.username,
+  }
 }
 
-export default withRouter(connect(mapStateToProps)(Dash));
+export default connect(mapStateToProps)(Dash)
